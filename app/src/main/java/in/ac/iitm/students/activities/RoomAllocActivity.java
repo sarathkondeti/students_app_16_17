@@ -93,7 +93,7 @@ public class RoomAllocActivity extends AppCompatActivity implements NavigationVi
         OLDROOM = Utils.getprefString(UtilStrings.HOSTEl, this);
 
         personName.setText(name);
-        personRollno.setText(rollNo);
+        personRollno.setText(roll_no);
         oldRoomNo.setText(OLDROOM);
         Uri.Builder builder = new Uri.Builder();
 
