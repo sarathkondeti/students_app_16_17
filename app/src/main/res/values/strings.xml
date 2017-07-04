@@ -14,7 +14,7 @@
     <string name="odd_year1">Jul-Nov 2016</string>
     <string name="even_year2">Jan-May 2017</string>
     <string name="odd_year2">Jul-Nov 2017</string>
-    <string name="about_us">This app is developed by Institute Mobops Team 2016–17. All rights are reserved</string>
+    <string name="about_us">This app is developed by Institute Mobops Team 2017–18. All rights are reserved</string>
     <string name="complaint_check_box_msg">I have already informed a mess/facilities managers prior to this complaint.</string>
 
     <string name="error_connection">Couldn\'t connect to the server.</string>
@@ -28,14 +28,15 @@
     <integer name="close_nav_drawer_delay">150</integer>
 
     <integer name="nav_index_home">0</integer>
-    <integer name="nav_index_search">1</integer>
-    <integer name="nav_index_contacts">2</integer>
-    <integer name="nav_index_schroeter">3</integer>
-    <integer name="nav_index_maps">4</integer>
-    <integer name="nav_index_eml">5</integer>
-    <integer name="nav_index_t5e">6</integer>
-    <integer name="nav_index_mess">7</integer>
-    <integer name="nav_index_calendar">8</integer>
+    <integer name="nav_index_room_alloc">1</integer>
+    <integer name="nav_index_search">2</integer>
+    <integer name="nav_index_contacts">3</integer>
+    <integer name="nav_index_schroeter">4</integer>
+    <integer name="nav_index_maps">5</integer>
+    <integer name="nav_index_eml">6</integer>
+    <integer name="nav_index_t5e">7</integer>
+    <integer name="nav_index_mess">8</integer>
+    <integer name="nav_index_calendar">9</integer>
 
     <string name="LoginURl">https://students.iitm.ac.in/studentsapp/login/index.php</string>
     <string name="url_register_fcm">https://students.iitm.ac.in/studentsapp/general/token_register.php</string>

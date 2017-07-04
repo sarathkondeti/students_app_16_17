@@ -9,7 +9,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -41,14 +40,11 @@ import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.gms.ads.formats.NativeAd;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
@@ -62,16 +58,17 @@ import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Map;
 
-import in.ac.iitm.students.fragments.ForceUpdateDialogFragment;
-import in.ac.iitm.students.fragments.OptionalUpdateDialogFragment;
-import in.ac.iitm.students.others.LogOutAlertClass;
-import in.ac.iitm.students.others.UtilStrings;
-import in.ac.iitm.students.others.Utils;
 import in.ac.iitm.students.R;
 import in.ac.iitm.students.activities.AboutUsActivity;
 import in.ac.iitm.students.activities.ContactUsActivity;
+import in.ac.iitm.students.activities.RoomAllocActivity;
 import in.ac.iitm.students.activities.SubscriptionActivity;
+import in.ac.iitm.students.fragments.ForceUpdateDialogFragment;
+import in.ac.iitm.students.fragments.OptionalUpdateDialogFragment;
+import in.ac.iitm.students.others.LogOutAlertClass;
 import in.ac.iitm.students.others.MySingleton;
+import in.ac.iitm.students.others.UtilStrings;
+import in.ac.iitm.students.others.Utils;
 
 import static in.ac.iitm.students.activities.SubscriptionActivity.MY_PREFS_NAME;
 
@@ -79,18 +76,78 @@ public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
 
     private static int optionalUpdateDialogCount = 0;
+    private static Context mContext;
+    String url = "https://students.iitm.ac.in/studentsapp/general/subs.php";
     private Toolbar toolbar;
     private ProgressBar pbar;
     private Snackbar snackbar;
     private FragmentManager fm;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    String url = "https://students.iitm.ac.in/studentsapp/general/subs.php";
     public static Context getContext() {
         return mContext;
     }
 
-    private static Context mContext;
+    public static void showAlert(Activity activity, String title, String message) {
+
+        Drawable dialog_icon;
+        dialog_icon = ContextCompat.getDrawable(activity, R.drawable.app_logo);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setIcon(dialog_icon);
+        builder.setTitle(title);
+        builder.setMessage(message)
+                .setNeutralButton(R.string.dismiss_home_dialog, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    public static void showAlert(Activity activity, String title, String message, final String link) {
+
+        Drawable dialog_icon;
+        dialog_icon = ContextCompat.getDrawable(activity, R.drawable.app_logo);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setIcon(dialog_icon);
+        builder.setTitle(title);
+        builder.setMessage(message)
+                .setNegativeButton(R.string.dismiss_home_dialog, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(R.string.go_to_link, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                openWebPage(link);
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private static void openWebPage(String url) {
+        Toast.makeText(mContext, "Getting data...", Toast.LENGTH_SHORT).show();
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+            mContext.startActivity(intent);
+        } else {
+            Toast.makeText(mContext,"Error getting data, try again later...", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     protected void onResume() {
@@ -171,10 +228,12 @@ public class HomeActivity extends AppCompatActivity
 
 
     }
+
     public void onRefresh() {
         swipeRefreshLayout.setRefreshing(true);
         refreshList();
     }
+
     public void refreshList() {
 
         new Handler().postDelayed(new Runnable() {
@@ -188,6 +247,7 @@ public class HomeActivity extends AppCompatActivity
         }, 3000);
 
     }
+
     private void getData() {
 
         final Context context = HomeActivity.this;
@@ -504,7 +564,11 @@ public class HomeActivity extends AppCompatActivity
             intent.putExtra("knock_knock", "home");
             flag = true;
 
-        } else if (id == R.id.nav_about) {
+        } else if (id == R.id.nav_room_alloc) {
+            intent = new Intent(context, RoomAllocActivity.class);
+            flag = true;
+
+        }else if (id == R.id.nav_about) {
             intent = new Intent(context, AboutUsActivity.class);
             flag = true;
 
@@ -730,67 +794,6 @@ public class HomeActivity extends AppCompatActivity
 
         }
 
-    }
-
-    public static void showAlert(Activity activity, String title, String message) {
-
-        Drawable dialog_icon;
-        dialog_icon = ContextCompat.getDrawable(activity, R.drawable.app_logo);
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setIcon(dialog_icon);
-        builder.setTitle(title);
-        builder.setMessage(message)
-                .setNeutralButton(R.string.dismiss_home_dialog, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                        dialog.dismiss();
-                    }
-                });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    public static void showAlert(Activity activity, String title, String message, final String link) {
-
-        Drawable dialog_icon;
-        dialog_icon = ContextCompat.getDrawable(activity, R.drawable.app_logo);
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setIcon(dialog_icon);
-        builder.setTitle(title);
-        builder.setMessage(message)
-                .setNegativeButton(R.string.dismiss_home_dialog, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton(R.string.go_to_link, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-                openWebPage(link);
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    private static void openWebPage(String url) {
-        Toast.makeText(mContext, "Getting data...", Toast.LENGTH_SHORT).show();
-        Uri webpage = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (intent.resolveActivity(mContext.getPackageManager()) != null) {
-            mContext.startActivity(intent);
-        } else {
-            Toast.makeText(mContext,"Error getting data, try again later...", Toast.LENGTH_SHORT).show();
-        }
     }
 
 }

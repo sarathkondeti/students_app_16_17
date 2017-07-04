@@ -24,11 +24,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -42,6 +40,7 @@ import java.util.List;
 import in.ac.iitm.students.R;
 import in.ac.iitm.students.activities.AboutUsActivity;
 import in.ac.iitm.students.activities.ContactUsActivity;
+import in.ac.iitm.students.activities.RoomAllocActivity;
 import in.ac.iitm.students.activities.SubscriptionActivity;
 import in.ac.iitm.students.fragments.UpcomingLectures;
 import in.ac.iitm.students.fragments.Year2014_15Fragment;
@@ -397,6 +396,10 @@ public class EMLActivity extends AppCompatActivity
         } else if (id == R.id.nav_calendar) {
             intent = new Intent(context, CalendarActivity.class);
             flag = true;
+        } else if (id == R.id.nav_room_alloc) {
+            intent = new Intent(context, RoomAllocActivity.class);
+            flag = true;
+
         } else if (id == R.id.nav_schroeter) {
             intent = new Intent(context, SchroeterActivity.class);
             flag = true;

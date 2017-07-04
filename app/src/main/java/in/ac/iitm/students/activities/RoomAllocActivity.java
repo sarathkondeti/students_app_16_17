@@ -1,16 +1,12 @@
-package in.ac.iitm.students.activities.main;
+package in.ac.iitm.students.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,56 +16,52 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import in.ac.iitm.students.R;
-import in.ac.iitm.students.activities.AboutUsActivity;
-import in.ac.iitm.students.activities.ContactUsActivity;
-import in.ac.iitm.students.activities.RoomAllocActivity;
-import in.ac.iitm.students.activities.SubscriptionActivity;
-import in.ac.iitm.students.fragments.NameSearchFragment;
-import in.ac.iitm.students.fragments.RollSearchFragment;
+import in.ac.iitm.students.activities.main.CalendarActivity;
+import in.ac.iitm.students.activities.main.EMLActivity;
+import in.ac.iitm.students.activities.main.HomeActivity;
+import in.ac.iitm.students.activities.main.ImpContactsActivity;
+import in.ac.iitm.students.activities.main.MapActivity;
+import in.ac.iitm.students.activities.main.MessAndFacilitiesActivity;
+import in.ac.iitm.students.activities.main.SchroeterActivity;
+import in.ac.iitm.students.activities.main.StudentSearchActivity;
+import in.ac.iitm.students.activities.main.T5EActivity;
 import in.ac.iitm.students.others.LogOutAlertClass;
 import in.ac.iitm.students.others.UtilStrings;
 import in.ac.iitm.students.others.Utils;
 
-public class StudentSearchActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
-    Toolbar toolbar;
+public class RoomAllocActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    TextView personName,personRollno,newRoomNo,oldRoomNo;
+    String name,rollNo,OLDROOM;
+    private DrawerLayout drawer;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_student_search);
+        setContentView(R.layout.activity_new_roll_no);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
-        setupViewPager(viewPager);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        if (tabLayout != null) {
-            tabLayout.setupWithViewPager(viewPager);
-        }
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.getMenu().getItem(getResources().getInteger(R.integer.nav_index_search)).setChecked(true);
+        navigationView.getMenu().getItem(getResources().getInteger(R.integer.nav_index_room_alloc)).setChecked(true);
         navigationView.setNavigationItemSelectedListener(this);
 
         View header = navigationView.getHeaderView(0);
@@ -82,7 +74,6 @@ public class StudentSearchActivity extends AppCompatActivity
 
         username.setText(name);
         rollNumber.setText(roll_no);
-
         ImageView imageView = (ImageView) header.findViewById(R.id.user_pic);
         String urlPic = "https://photos.iitm.ac.in//byroll.php?roll=" + roll_no;
         Picasso.with(this)
@@ -92,56 +83,57 @@ public class StudentSearchActivity extends AppCompatActivity
                 .fit()
                 .centerCrop()
                 .into(imageView);
+
+
+        personName = (TextView) findViewById(R.id.person_name);
+        personRollno = (TextView) findViewById(R.id.person_rollno);
+        oldRoomNo = (TextView) findViewById(R.id.old_room_no);
+        newRoomNo = (TextView) findViewById(R.id.new_room_no);
+
+        OLDROOM = Utils.getprefString(UtilStrings.HOSTEl, this);
+
+        personName.setText(name);
+        personRollno.setText(rollNo);
+        oldRoomNo.setText(OLDROOM);
+        Uri.Builder builder = new Uri.Builder();
+
+
+        getNewRoom();
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new NameSearchFragment(), "Name");
-        adapter.addFragment(new RollSearchFragment(), "Roll number");
-        viewPager.setAdapter(adapter);
-    }
+    private void getNewRoom() {
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            Intent intent = new Intent(StudentSearchActivity.this, HomeActivity.class);
-            startActivity(intent);
-        }
-    }
+        String url = "";
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
+        StringRequest jsonObjRqt = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    JSONObject jsonObject;
+                    String hostel="",roomno="";
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_about) {
-            Intent intent = new Intent(StudentSearchActivity.this, AboutUsActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (id == R.id.action_contact) {
-            Intent intent = new Intent(StudentSearchActivity.this, ContactUsActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (id == R.id.action_log_out) {
-            LogOutAlertClass lg = new LogOutAlertClass();
-            lg.isSure(StudentSearchActivity.this);
-            return true;
-        }
+                    for(int i=0;i<jsonArray.length();i++){
+                        jsonObject = jsonArray.getJSONObject(i);
+                        hostel = jsonObject.getString("hostel");
+                        roomno = jsonObject.getString("roomno");
+                    }
 
-        return super.onOptionsItemSelected(item);
+                    newRoomNo.setText(hostel+" "+roomno);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                Toast.makeText(RoomAllocActivity.this,"Couldn't connect to the server.",Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -151,39 +143,35 @@ public class StudentSearchActivity extends AppCompatActivity
         int id = item.getItemId();
         Intent intent = new Intent();
         boolean flag = false;
-        final Context context = StudentSearchActivity.this;
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final Context context = RoomAllocActivity.this;
 
         if (id == R.id.nav_home) {
             intent = new Intent(context, HomeActivity.class);
             flag = true;
         } else if (id == R.id.nav_search) {
-
+            intent = new Intent(context, StudentSearchActivity.class);
+            flag = true;
         } else if (id == R.id.nav_contacts) {
             intent = new Intent(context, ImpContactsActivity.class);
             flag = true;
-
         } else if (id == R.id.nav_map) {
             intent = new Intent(context, MapActivity.class);
             flag = true;
-        } else if (id == R.id.nav_eml) {
+        }else if (id == R.id.nav_eml) {
             intent = new Intent(context, EMLActivity.class);
             flag = true;
-        } else if (id == R.id.nav_room_alloc) {
-            intent = new Intent(context, RoomAllocActivity.class);
+        }else if (id == R.id.nav_room_alloc) {
+
+        } else if (id == R.id.nav_t5e) {
+            intent = new Intent(context, T5EActivity.class);
             flag = true;
 
         } else if (id == R.id.nav_mess_and_facilities) {
             intent = new Intent(context, MessAndFacilitiesActivity.class);
             flag = true;
-        } else if (id == R.id.nav_t5e) {
-            intent = new Intent(context, T5EActivity.class);
-            flag = true;
-
         } else if (id == R.id.nav_calendar) {
             intent = new Intent(context, CalendarActivity.class);
             flag = true;
-
         } else if (id == R.id.nav_schroeter) {
             intent = new Intent(context, SchroeterActivity.class);
             flag = true;
@@ -193,9 +181,9 @@ public class StudentSearchActivity extends AppCompatActivity
             flag = true;
 
         } else if (id == R.id.nav_about) {
-
             intent = new Intent(context, AboutUsActivity.class);
             flag = true;
+
         } else if (id == R.id.nav_contact_us) {
             intent = new Intent(context, ContactUsActivity.class);
             flag = true;
@@ -208,7 +196,7 @@ public class StudentSearchActivity extends AppCompatActivity
                         @Override
                         public void run() {
                             LogOutAlertClass lg = new LogOutAlertClass();
-                            lg.isSure(StudentSearchActivity.this);
+                            lg.isSure(RoomAllocActivity.this);
                         }
                     }
                     , getResources().getInteger(R.integer.close_nav_drawer_delay)  // it takes around 200 ms for drawer to close
@@ -233,36 +221,48 @@ public class StudentSearchActivity extends AppCompatActivity
                 }
                 , getResources().getInteger(R.integer.close_nav_drawer_delay)  // it takes around 200 ms for drawer to close
         );
-
         return true;
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_about) {
+            Intent intent = new Intent(RoomAllocActivity.this, AboutUsActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_contact) {
+            Intent intent = new Intent(RoomAllocActivity.this, ContactUsActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.action_log_out) {
+            LogOutAlertClass lg = new LogOutAlertClass();
+            lg.isSure(RoomAllocActivity.this);
+            return true;
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
+        return super.onOptionsItemSelected(item);
+    }
 
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            Intent intent = new Intent(RoomAllocActivity.this, HomeActivity.class);
+            startActivity(intent);
         }
+    }
 
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
     }
 }

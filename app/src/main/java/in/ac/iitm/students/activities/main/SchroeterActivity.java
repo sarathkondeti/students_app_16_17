@@ -25,11 +25,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -39,16 +37,17 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.List;
 
+import in.ac.iitm.students.R;
+import in.ac.iitm.students.activities.AboutUsActivity;
+import in.ac.iitm.students.activities.ContactUsActivity;
+import in.ac.iitm.students.activities.RoomAllocActivity;
+import in.ac.iitm.students.activities.SubscriptionActivity;
 import in.ac.iitm.students.fragments.SchroiterScoresFragment;
+import in.ac.iitm.students.fragments.SchroiterUpdatesFragment;
 import in.ac.iitm.students.others.LogOutAlertClass;
 import in.ac.iitm.students.others.MySingleton;
 import in.ac.iitm.students.others.UtilStrings;
 import in.ac.iitm.students.others.Utils;
-import in.ac.iitm.students.R;
-import in.ac.iitm.students.activities.AboutUsActivity;
-import in.ac.iitm.students.activities.ContactUsActivity;
-import in.ac.iitm.students.activities.SubscriptionActivity;
-import in.ac.iitm.students.fragments.SchroiterUpdatesFragment;
 
 public class SchroeterActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -351,6 +350,10 @@ public class SchroeterActivity extends AppCompatActivity
 
             intent = new Intent(context, AboutUsActivity.class);
             flag = true;
+        } else if (id == R.id.nav_room_alloc) {
+            intent = new Intent(context, RoomAllocActivity.class);
+            flag = true;
+
         } else if (id == R.id.nav_contact_us) {
             intent = new Intent(context, ContactUsActivity.class);
             flag = true;

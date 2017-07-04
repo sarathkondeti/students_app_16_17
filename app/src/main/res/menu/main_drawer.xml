@@ -8,6 +8,10 @@
             android:icon="@drawable/ic_home_white_24dp"
             android:title="@string/title_activity_home" />
         <item
+            android:id="@+id/nav_room_alloc"
+            android:icon="@drawable/ic_person_pin_circle_black_24dp"
+            android:title="Room Allocation" />
+        <item
             android:id="@+id/nav_search"
             android:icon="@drawable/ic_search_white_24dp"
             android:title="@string/title_activity_student_search" />

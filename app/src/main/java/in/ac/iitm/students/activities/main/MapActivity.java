@@ -82,6 +82,7 @@ import java.util.List;
 import in.ac.iitm.students.R;
 import in.ac.iitm.students.activities.AboutUsActivity;
 import in.ac.iitm.students.activities.ContactUsActivity;
+import in.ac.iitm.students.activities.RoomAllocActivity;
 import in.ac.iitm.students.activities.SubscriptionActivity;
 import in.ac.iitm.students.others.ClusterMarkerLocation;
 import in.ac.iitm.students.others.DataParser;
@@ -1025,6 +1026,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             intent = new Intent(context, AboutUsActivity.class);
             flag = true;
+        } else if (id == R.id.nav_room_alloc) {
+            intent = new Intent(context, RoomAllocActivity.class);
+            flag = true;
+
         } else if (id == R.id.nav_contact_us) {
             intent = new Intent(context, ContactUsActivity.class);
             flag = true;

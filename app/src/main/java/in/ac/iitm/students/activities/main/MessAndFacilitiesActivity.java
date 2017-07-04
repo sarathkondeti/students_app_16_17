@@ -34,6 +34,7 @@ import in.ac.iitm.students.activities.AboutUsActivity;
 import in.ac.iitm.students.activities.ContactUsActivity;
 import in.ac.iitm.students.activities.MessOrFacilitiesListActivity;
 import in.ac.iitm.students.activities.MyComplaintsActivity;
+import in.ac.iitm.students.activities.RoomAllocActivity;
 import in.ac.iitm.students.activities.SubscriptionActivity;
 import in.ac.iitm.students.others.LogOutAlertClass;
 import in.ac.iitm.students.others.MySingleton;
@@ -248,6 +249,10 @@ public class MessAndFacilitiesActivity extends AppCompatActivity
             flag = true;
         } else if (id == R.id.nav_contact_us) {
             intent = new Intent(context, ContactUsActivity.class);
+            flag = true;
+
+        } else if (id == R.id.nav_room_alloc) {
+            intent = new Intent(context, RoomAllocActivity.class);
             flag = true;
 
         } else if (id == R.id.nav_log_out) {

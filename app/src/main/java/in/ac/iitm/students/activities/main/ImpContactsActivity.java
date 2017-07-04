@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 import in.ac.iitm.students.R;
 import in.ac.iitm.students.activities.AboutUsActivity;
 import in.ac.iitm.students.activities.ContactUsActivity;
+import in.ac.iitm.students.activities.RoomAllocActivity;
 import in.ac.iitm.students.activities.SubscriptionActivity;
 import in.ac.iitm.students.adapters.ImpContactsAdapter;
 import in.ac.iitm.students.others.LogOutAlertClass;
@@ -192,7 +193,11 @@ public class ImpContactsActivity extends AppCompatActivity
             intent = new Intent(context, SubscriptionActivity.class);
             flag = true;
 
-        } else if (id == R.id.nav_about) {
+        } else if (id == R.id.nav_room_alloc) {
+            intent = new Intent(context, RoomAllocActivity.class);
+            flag = true;
+
+        }else if (id == R.id.nav_about) {
 
             intent = new Intent(context, AboutUsActivity.class);
             flag = true;

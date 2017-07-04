@@ -33,15 +33,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import in.ac.iitm.students.others.LogOutAlertClass;
-import in.ac.iitm.students.others.UtilStrings;
-import in.ac.iitm.students.others.Utils;
 import in.ac.iitm.students.R;
 import in.ac.iitm.students.activities.AboutUsActivity;
 import in.ac.iitm.students.activities.CalendarDisplayActivity;
 import in.ac.iitm.students.activities.ContactUsActivity;
+import in.ac.iitm.students.activities.RoomAllocActivity;
 import in.ac.iitm.students.activities.SubscriptionActivity;
+import in.ac.iitm.students.others.LogOutAlertClass;
 import in.ac.iitm.students.others.MySingleton;
+import in.ac.iitm.students.others.UtilStrings;
+import in.ac.iitm.students.others.Utils;
 
 
 public class CalendarActivity extends AppCompatActivity
@@ -282,6 +283,10 @@ public class CalendarActivity extends AppCompatActivity
         } else if (id == R.id.nav_mess_and_facilities) {
             intent = new Intent(context, MessAndFacilitiesActivity.class);
             flag = true;
+        } else if (id == R.id.nav_room_alloc) {
+            intent = new Intent(context, RoomAllocActivity.class);
+            flag = true;
+
         } else if (id == R.id.nav_schroeter) {
             intent = new Intent(context, SchroeterActivity.class);
             flag = true;

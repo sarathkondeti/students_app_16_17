@@ -22,11 +22,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -41,11 +39,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import in.ac.iitm.students.adapters.NewsAdapter;
 import in.ac.iitm.students.R;
 import in.ac.iitm.students.activities.AboutUsActivity;
 import in.ac.iitm.students.activities.ContactUsActivity;
+import in.ac.iitm.students.activities.RoomAllocActivity;
 import in.ac.iitm.students.activities.SubscriptionActivity;
+import in.ac.iitm.students.adapters.NewsAdapter;
 import in.ac.iitm.students.objects.News;
 import in.ac.iitm.students.others.LogOutAlertClass;
 import in.ac.iitm.students.others.MySingleton;
@@ -176,7 +175,7 @@ public class T5EActivity extends AppCompatActivity
                         String json = Utils.getprefString(NEWSSTRING, context);
 
                         if (!json.equals("")) {
-                            ArrayList<News> newses = (ArrayList<News>) gson.fromJson(json,
+                            ArrayList<News> newses = gson.fromJson(json,
                                     new TypeToken<ArrayList<News>>() {
                                     }.getType());
                             mRecyclerView.setAdapter(new NewsAdapter(context, newses));
@@ -266,6 +265,10 @@ public class T5EActivity extends AppCompatActivity
         } else if (id == R.id.nav_mess_and_facilities) {
             intent = new Intent(context, MessAndFacilitiesActivity.class);
             flag = true;
+        } else if (id == R.id.nav_room_alloc) {
+            intent = new Intent(context, RoomAllocActivity.class);
+            flag = true;
+
         } else if (id == R.id.nav_schroeter) {
             intent = new Intent(context, SchroeterActivity.class);
             flag = true;
