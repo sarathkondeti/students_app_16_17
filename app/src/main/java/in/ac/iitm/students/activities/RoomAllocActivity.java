@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.ac.iitm.students.R;
 import in.ac.iitm.students.activities.main.CalendarActivity;
 import in.ac.iitm.students.activities.main.EMLActivity;
@@ -43,7 +44,7 @@ import in.ac.iitm.students.others.Utils;
 
 public class RoomAllocActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
     TextView personName,personRollno,newRoomNo,oldRoomNo;
-    String name,rollNo,OLDROOM;
+    String name,roll_no;
     private DrawerLayout drawer;
     private Toolbar toolbar;
 
@@ -69,8 +70,8 @@ public class RoomAllocActivity extends AppCompatActivity implements NavigationVi
         TextView username = (TextView) header.findViewById(R.id.tv_username);
         TextView rollNumber = (TextView) header.findViewById(R.id.tv_roll_number);
 
-        String roll_no = Utils.getprefString(UtilStrings.ROLLNO, this);
-        String name = Utils.getprefString(UtilStrings.NAME, this);
+        roll_no = Utils.getprefString(UtilStrings.ROLLNO, this);
+        name = Utils.getprefString(UtilStrings.NAME, this);
 
         username.setText(name);
         rollNumber.setText(roll_no);
@@ -84,18 +85,24 @@ public class RoomAllocActivity extends AppCompatActivity implements NavigationVi
                 .centerCrop()
                 .into(imageView);
 
-
+        // This is for Circle ProPic in newRoomAllocation page..
+        CircleImageView proPic = (CircleImageView) header.findViewById(R.id.new_roll_propic);
+        Picasso.with(this)
+                .load(urlPic)
+                .placeholder(R.mipmap.ic_launcher)
+                .error(R.mipmap.ic_launcher)
+                .fit()
+                .centerCrop()
+                .into(proPic);
         personName = (TextView) findViewById(R.id.person_name);
         personRollno = (TextView) findViewById(R.id.person_rollno);
         oldRoomNo = (TextView) findViewById(R.id.old_room_no);
         newRoomNo = (TextView) findViewById(R.id.new_room_no);
 
-        OLDROOM = Utils.getprefString(UtilStrings.HOSTEl, this);
-
         personName.setText(name);
         personRollno.setText(roll_no);
-        oldRoomNo.setText(OLDROOM);
-        Uri.Builder builder = new Uri.Builder();
+
+
 
 
         getNewRoom();
@@ -103,7 +110,7 @@ public class RoomAllocActivity extends AppCompatActivity implements NavigationVi
 
     private void getNewRoom() {
 
-        String url = "";
+        String url = "https://students.iitm.ac.in/studentsapp/studentlist/getresultbyroll.php?rollno="+roll_no;
 
         StringRequest jsonObjRqt = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -120,7 +127,7 @@ public class RoomAllocActivity extends AppCompatActivity implements NavigationVi
                         roomno = jsonObject.getString("roomno");
                     }
 
-                    newRoomNo.setText(hostel+" "+roomno);
+                    oldRoomNo.setText(hostel+" "+roomno);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
