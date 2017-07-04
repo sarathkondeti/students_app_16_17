@@ -81,7 +81,7 @@ public class NewRollNo extends AppCompatActivity {
                 Toast.makeText(NewRollNo.this,"Couldn't connect to the server.",Toast.LENGTH_LONG).show();
             }
         });
-        MySingleton.getInstance(this).addToRequestQueue(jsonObjRqt);
+
     }
 
 }
